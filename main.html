@@ -2,30 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Be My Valentine </title>
-  <script>
-  const noBtn = document.querySelector('.no');
-
-  // Escape effect for No button on both desktop and mobile
-  function moveNoButton() {
-    const x = Math.random() * (window.innerWidth - 150);
-    const y = Math.random() * (window.innerHeight - 100);
-    noBtn.style.left = x + 'px';
-    noBtn.style.top = y + 'px';
-  }
-
-  // Desktop hover
-  noBtn.addEventListener('mouseover', moveNoButton);
-
-  // Mobile tap/click
-  noBtn.addEventListener('click', moveNoButton);
-  noBtn.addEventListener('touchstart', moveNoButton);
-</script>
-
+  <title>Be My Valentine</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
       text-align: center;
       padding-top: 100px;
       color: #2c2c2c;
@@ -37,6 +18,8 @@
       font-size: 3em;
       color: #b30059;
       text-shadow: 2px 2px #fff;
+      z-index: 10;
+      position: relative;
     }
     .btn {
       margin: 20px;
@@ -47,6 +30,7 @@
       cursor: pointer;
       transition: all 0.8s ease;
       position: absolute;
+      z-index: 10;
     }
     .yes {
       background: #ff4d6d;
@@ -62,7 +46,6 @@
       top: 70%;
       transform: translate(-50%, -50%);
     }
-    /* Popup box styling */
     .popup {
       display: none;
       position: fixed;
@@ -77,6 +60,31 @@
       box-shadow: 0 0 20px rgba(0,0,0,0.3);
       z-index: 1000;
     }
+
+    /* Heart animation */
+    .heart {
+      position: absolute;
+      color: #ff4d6d;
+      font-size: 24px;
+      animation: floatUp 6s linear infinite;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) scale(0.8); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+    }
+
+    /* Rose animation */
+    .rose {
+      position: absolute;
+      font-size: 20px;
+      animation: fallDown 5s linear infinite;
+    }
+    @keyframes fallDown {
+      0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -84,31 +92,108 @@
   <button class="btn yes" onclick="showPopup()">Yes</button>
   <button class="btn no">No 😢</button>
 
-  <!-- Popup box -->
-  <div id="popup" class="popup">
-    🎉💖 Yay! You said YES! 💖🎉
-  </div>
+  <div id="popup" class="popup">🎉💖 YEYEYEYEYEYEY 💖🎉</div>
+  <style>
+  /* Heartbeat effect */
+  .heartbeat {
+    animation: beat 0.6s ease-in-out infinite;
+  }
+  @keyframes beat {
+    0% { transform: scale(1); }
+    25% { transform: scale(1.3); }
+    50% { transform: scale(1); }
+    75% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+  }
+
+  /* Blink effect */
+  .blink {
+    animation: blink 0.5s alternate 4;
+  }
+  @keyframes blink {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  /* Bubble effect */
+  .bubble {
+    animation: bubble 1s ease-out forwards;
+  }
+  @keyframes bubble {
+    0% { transform: scale(0.5); opacity: 0.5; }
+    50% { transform: scale(1.5); opacity: 1; }
+    100% { transform: scale(0); opacity: 0; }
+  }
+</style>
+
+<script>
+  // Add special heart when clicked
+  document.body.addEventListener('click', (e) => {
+    const heart = document.createElement('div');
+    heart.innerHTML = '❤️';
+    heart.style.position = 'absolute';
+    heart.style.left = e.pageX + 'px';
+    heart.style.top = e.pageY + 'px';
+    heart.style.fontSize = '30px';
+    heart.style.zIndex = 999;
+
+    // Randomly choose an effect
+    const effects = ['heartbeat', 'blink', 'bubble'];
+    const effect = effects[Math.floor(Math.random() * effects.length)];
+    heart.classList.add(effect);
+
+    document.body.appendChild(heart);
+
+    // Remove after animation
+    setTimeout(() => { heart.remove(); }, 2000);
+  });
+</script>
+
 
   <script>
     const noBtn = document.querySelector('.no');
 
-    // Escape effect for No button
-    noBtn.addEventListener('mouseover', () => {
+    // Escape effect for No button (desktop + mobile)
+    function moveNoButton() {
       const x = Math.random() * (window.innerWidth - 150);
       const y = Math.random() * (window.innerHeight - 100);
       noBtn.style.left = x + 'px';
       noBtn.style.top = y + 'px';
-    });
+    }
+    noBtn.addEventListener('mouseover', moveNoButton);
+    noBtn.addEventListener('click', moveNoButton);
+    noBtn.addEventListener('touchstart', moveNoButton);
 
     // Show popup when Yes is clicked
     function showPopup() {
       const popup = document.getElementById('popup');
       popup.style.display = 'block';
-      setTimeout(() => {
-        popup.style.display = 'none';
-      }, 3000); // hide after 3 seconds
+      setTimeout(() => { popup.style.display = 'none'; }, 3000);
     }
+
+    // Generate hearts bubbling
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.innerHTML = '❤️';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = (3 + Math.random() * 3) + 's';
+      document.body.appendChild(heart);
+      setTimeout(() => { heart.remove(); }, 6000);
+    }
+    setInterval(createHeart, 800);
+
+    // Generate roses raining
+    function createRose() {
+      const rose = document.createElement('div');
+      rose.classList.add('rose');
+      rose.innerHTML = '🌹';
+      rose.style.left = Math.random() * 100 + 'vw';
+      rose.style.animationDuration = (3 + Math.random() * 2) + 's';
+      document.body.appendChild(rose);
+      setTimeout(() => { rose.remove(); }, 5000);
+    }
+    setInterval(createRose, 1200);
   </script>
 </body>
-
 </html>
